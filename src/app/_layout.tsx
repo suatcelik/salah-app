@@ -18,9 +18,17 @@ setupNotificationHandler();
 function AppNavigator() {
   const router  = useRouter();
   const [ready, setReady] = useState(false);
+  const [initialRoute, setInitialRoute] = useState<'/(tabs)' | '/onboarding' | null>(null);
   useStoreReview();
 
   useEffect(() => { bootstrap(); }, []);
+
+  // Stack mount olduktan sonra yönlendir (timing fix)
+  useEffect(() => {
+    if (ready && initialRoute) {
+      router.replace(initialRoute);
+    }
+  }, [ready, initialRoute]);
 
   async function bootstrap() {
     try {
@@ -38,9 +46,9 @@ function AppNavigator() {
     }
 
     const onboarded = await AsyncStorage.getItem('@salah_onboarded');
-    setReady(true);
+    setInitialRoute(onboarded ? '/(tabs)' : '/onboarding');
     await SplashScreen.hideAsync();
-    router.replace(onboarded ? '/(tabs)' : '/onboarding');
+    setReady(true);
   }
 
   // Bildirime tıklandığında ana ekrana yönlendir
