@@ -53,6 +53,7 @@ interface PrayerStore {
   notifSettings: PrayerNotifMap;
 
   // Eylemler
+  initialize:    () => Promise<void>;
   fetchByCity:   (city: string) => Promise<void>;
   fetchByDevice: () => Promise<void>;
   refreshTimes:  () => Promise<void>;
@@ -86,6 +87,25 @@ export const usePrayerStore = create<PrayerStore>((set, get) => ({
   error:         null,
   lastFetched:   null,
   notifSettings: DEFAULT_NOTIF,
+
+  // ── Kaydedilen konuma göre başlat (onboarding'den sonra)
+  initialize: async () => {
+    const [savedCity, savedLat] = await Promise.all([
+      AsyncStorage.getItem(KEYS.CITY),
+      AsyncStorage.getItem(KEYS.LAT),
+    ]);
+
+    if (savedLat) {
+      // GPS konum kaydedilmişse cihaz konumuyla çek
+      await get().fetchByDevice();
+    } else if (savedCity) {
+      // Şehir adı kaydedilmişse şehirle çek
+      await get().fetchByCity(savedCity);
+    } else {
+      // Hiçbir şey yoksa varsayılan
+      await get().fetchByCity('Istanbul');
+    }
+  },
 
   // ── Şehre göre çek
   fetchByCity: async (city: string) => {
