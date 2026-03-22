@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  Switch, Platform, Alert, Linking, Modal, FlatList,
+  Switch, Platform, Alert, Linking, Modal, TextInput, KeyboardAvoidingView,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -32,12 +32,6 @@ const BORDER       = 'rgba(201,168,76,0.18)';
 const PRAYER_EMOJI: Record<string, string> = {
   fajr: '🌙', dhuhr: '☀️', asr: '🌤️', maghrib: '🌆', isha: '🌃',
 };
-
-const TURKISH_CITIES = [
-  'Adana', 'Ankara', 'Antalya', 'Bursa', 'Diyarbakır', 'Erzurum',
-  'Eskişehir', 'Gaziantep', 'İstanbul', 'İzmir', 'Kayseri', 'Konya',
-  'Malatya', 'Mersin', 'Samsun', 'Trabzon',
-];
 
 const SOUND_OPTIONS = [
   { key: 'ezan',      labelKey: 'ezanSound',    icon: '🕌' },
@@ -175,56 +169,83 @@ function PrayerNotifRow({
   );
 }
 
-// ── Şehir seçici modal
+// ── Şehir seçici modal (serbest metin girişi — tüm dünya şehirleri)
 function CitySelectorModal({ visible, currentCity, onSelect, onClose }: {
   visible: boolean;
   currentCity: string;
   onSelect: (city: string) => void;
   onClose: () => void;
 }) {
+  const t = useT();
+  const { isRTL } = useLanguage();
+  const [input, setInput] = useState(currentCity);
+
+  // Modal açıldığında mevcut şehri yükle
+  React.useEffect(() => {
+    if (visible) setInput(currentCity);
+  }, [visible, currentCity]);
+
+  const confirm = () => {
+    const trimmed = input.trim();
+    if (trimmed.length > 0) { onSelect(trimmed); onClose(); }
+  };
+
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <View style={cs.overlay}>
-        <View style={cs.sheet}>
-          <View style={cs.handle} />
-          <Text style={cs.title}>Şehir Seç</Text>
-          <FlatList
-            data={TURKISH_CITIES}
-            keyExtractor={item => item}
-            renderItem={({ item }) => {
-              const isSelected = item.toLowerCase() === currentCity.toLowerCase();
-              return (
-                <TouchableOpacity
-                  style={[cs.cityRow, isSelected && cs.cityRowSel]}
-                  onPress={() => { onSelect(item); onClose(); }}
-                  activeOpacity={0.7}
-                >
-                  <Text style={[cs.cityName, isSelected && cs.cityNameSel]}>{item}</Text>
-                  {isSelected && <Text style={{ fontSize: 16 }}>✓</Text>}
-                </TouchableOpacity>
-              );
-            }}
-          />
-          <TouchableOpacity style={cs.cancelBtn} onPress={onClose}>
-            <Text style={cs.cancelTxt}>Kapat</Text>
-          </TouchableOpacity>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <View style={cs.overlay}>
+          <View style={cs.sheet}>
+            <View style={cs.handle} />
+            <Text style={cs.title}>{t.settings.cityInputTitle}</Text>
+            <Text style={cs.hint}>{t.onboarding.locationHint}</Text>
+            <TextInput
+              style={[cs.input, isRTL && cs.inputRTL]}
+              value={input}
+              onChangeText={setInput}
+              placeholder={t.onboarding.cityPlaceholder}
+              placeholderTextColor="rgba(107,92,62,0.4)"
+              autoCorrect={false}
+              autoCapitalize="words"
+              returnKeyType="done"
+              onSubmitEditing={confirm}
+              textAlign={isRTL ? 'right' : 'left'}
+            />
+            <View style={cs.btnRow}>
+              <TouchableOpacity style={cs.cancelBtn} onPress={onClose}>
+                <Text style={cs.cancelTxt}>✕</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[cs.confirmBtn, input.trim().length === 0 && cs.confirmBtnDisabled]}
+                onPress={confirm}
+                disabled={input.trim().length === 0}
+              >
+                <Text style={cs.confirmTxt}>📍 {t.settings.cityConfirm}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
 
 const cs = StyleSheet.create({
-  overlay:      { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' },
-  sheet:        { backgroundColor: '#FAF6EE', borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingBottom: 34, maxHeight: '70%' },
-  handle:       { width: 40, height: 4, backgroundColor: 'rgba(107,92,62,0.2)', borderRadius: 2, alignSelf: 'center', marginTop: 12, marginBottom: 8 },
-  title:        { fontSize: 16, fontWeight: '800', color: '#1A1208', textAlign: 'center', marginBottom: 12, paddingHorizontal: 20 },
-  cityRow:      { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: 'rgba(201,168,76,0.1)' },
-  cityRowSel:   { backgroundColor: 'rgba(15,61,46,0.06)' },
-  cityName:     { fontSize: 15, fontWeight: '600', color: '#1A1208' },
-  cityNameSel:  { color: '#0F3D2E' },
-  cancelBtn:    { marginHorizontal: 20, marginTop: 12, paddingVertical: 14, backgroundColor: 'rgba(107,92,62,0.1)', borderRadius: 14, alignItems: 'center' },
-  cancelTxt:    { fontSize: 15, fontWeight: '700', color: '#6B5C3E' },
+  overlay:           { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' },
+  sheet:             { backgroundColor: '#FAF6EE', borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingHorizontal: 20, paddingBottom: 34, paddingTop: 4 },
+  handle:            { width: 40, height: 4, backgroundColor: 'rgba(107,92,62,0.2)', borderRadius: 2, alignSelf: 'center', marginBottom: 16 },
+  title:             { fontSize: 17, fontWeight: '800', color: '#1A1208', textAlign: 'center', marginBottom: 6 },
+  hint:              { fontSize: 12, color: '#6B5C3E', textAlign: 'center', marginBottom: 18 },
+  input:             { backgroundColor: '#fff', borderRadius: 16, borderWidth: 1.5, borderColor: 'rgba(201,168,76,0.3)', paddingHorizontal: 18, paddingVertical: 14, fontSize: 16, color: '#1A1208', marginBottom: 16 },
+  inputRTL:          { textAlign: 'right' },
+  btnRow:            { flexDirection: 'row', gap: 10 },
+  cancelBtn:         { flex: 1, paddingVertical: 14, backgroundColor: 'rgba(107,92,62,0.1)', borderRadius: 14, alignItems: 'center' },
+  cancelTxt:         { fontSize: 14, fontWeight: '700', color: '#6B5C3E' },
+  confirmBtn:        { flex: 2, paddingVertical: 14, backgroundColor: '#0F3D2E', borderRadius: 14, alignItems: 'center' },
+  confirmBtnDisabled:{ opacity: 0.4 },
+  confirmTxt:        { fontSize: 14, fontWeight: '800', color: '#E8C96A' },
 });
 
 // ── Ana ekran
@@ -522,13 +543,13 @@ export default function ProfileScreen() {
         )}
 
         {/* ── Şehir */}
-        <Divider label="Konum" />
+        <Divider label={t.settings.location} />
         <TouchableOpacity style={s.settRow} onPress={() => setShowCitySelector(true)} activeOpacity={0.85}>
           <View style={[s.settIcon, { backgroundColor: 'rgba(26,107,82,0.1)' }]}>
             <Text style={{ fontSize: 20 }}>📍</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={s.settLabel}>Şehir</Text>
+            <Text style={s.settLabel}>{t.settings.changeCity}</Text>
             <Text style={s.settSub}>{city}</Text>
           </View>
           <Text style={s.settArrow}>›</Text>

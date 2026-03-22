@@ -129,6 +129,10 @@ export interface Translations {
     neverShow: string;
     reviewTitle: string;
     reviewSubtitle: string;
+    location: string;
+    changeCity: string;
+    cityInputTitle: string;
+    cityConfirm: string;
   };
 
   permission: {
@@ -208,6 +212,8 @@ export const translations: Record<Language, Translations> = {
       rateUs: 'App Store\'da Değerlendir', remindLater: 'Daha sonra hatırlat',
       neverShow: 'Bir daha gösterme', reviewTitle: 'Nasıl Beğendiniz?',
       reviewSubtitle: 'Deneyiminizi paylaşır mısınız?',
+      location: 'Konum', changeCity: 'Şehri Değiştir',
+      cityInputTitle: 'Şehir Seç', cityConfirm: 'Onayla',
     },
     permission: {
       title: 'Ezan', titleHighlight: 'Bildirimlerine\nİzin Ver',
@@ -278,6 +284,8 @@ export const translations: Record<Language, Translations> = {
       rateUs: 'Rate on App Store', remindLater: 'Remind me later',
       neverShow: 'Never show again', reviewTitle: 'Enjoying Salah?',
       reviewSubtitle: 'Would you like to share your experience?',
+      location: 'Location', changeCity: 'Change City',
+      cityInputTitle: 'Select City', cityConfirm: 'Confirm',
     },
     permission: {
       title: 'Allow', titleHighlight: 'Adhan\nNotifications',
@@ -348,6 +356,8 @@ export const translations: Record<Language, Translations> = {
       rateUs: 'قيّم التطبيق', remindLater: 'ذكّرني لاحقاً',
       neverShow: 'لا تظهر مجدداً', reviewTitle: 'كيف تجد التطبيق؟',
       reviewSubtitle: 'شاركنا تجربتك',
+      location: 'الموقع', changeCity: 'تغيير المدينة',
+      cityInputTitle: 'اختر مدينة', cityConfirm: 'تأكيد',
     },
     permission: {
       title: 'إذن', titleHighlight: 'إشعارات\nالأذان',
@@ -418,6 +428,8 @@ export const translations: Record<Language, Translations> = {
       rateUs: 'Im App Store bewerten', remindLater: 'Später erinnern',
       neverShow: 'Nie wieder anzeigen', reviewTitle: 'Wie gefällt Ihnen Salah?',
       reviewSubtitle: 'Teilen Sie Ihre Erfahrung',
+      location: 'Standort', changeCity: 'Stadt ändern',
+      cityInputTitle: 'Stadt wählen', cityConfirm: 'Bestätigen',
     },
     permission: {
       title: 'Erlauben Sie', titleHighlight: 'Gebets-\nBenachrichtigungen',
@@ -488,6 +500,8 @@ export const translations: Record<Language, Translations> = {
       rateUs: "Évaluer sur l'App Store", remindLater: 'Me rappeler plus tard',
       neverShow: 'Ne plus afficher', reviewTitle: 'Vous aimez Salah?',
       reviewSubtitle: 'Partagez votre expérience',
+      location: 'Localisation', changeCity: 'Changer de ville',
+      cityInputTitle: 'Choisir une ville', cityConfirm: 'Confirmer',
     },
     permission: {
       title: 'Autoriser les', titleHighlight: 'notifications\nde prière',
