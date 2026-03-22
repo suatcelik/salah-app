@@ -1,9 +1,10 @@
 import React, { useState, useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
-  ScrollView, Animated, TextInput, Platform,
+  ScrollView, Animated, Platform,
   KeyboardAvoidingView,
 } from 'react-native';
+import CityAutocompleteInput from '@/components/CityAutocompleteInput';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -245,14 +246,16 @@ export default function OnboardingScreen() {
               </View>
 
               {/* Şehir girişi */}
-              <TextInput
-                style={[s.cityInput, t.isRTL && s.rtl]}
-                placeholder={t.onboarding.cityPlaceholder}
-                placeholderTextColor="rgba(255,255,255,0.35)"
+              <CityAutocompleteInput
                 value={city}
                 onChangeText={setCity}
+                onSelect={setCity}
+                placeholder={t.onboarding.cityPlaceholder}
+                placeholderTextColor="rgba(255,255,255,0.35)"
                 textAlign={t.isRTL ? 'right' : 'left'}
-                autoCorrect={false}
+                inputStyle={[s.cityInput, t.isRTL && s.rtl]}
+                containerStyle={{ marginBottom: 24 }}
+                theme="dark"
               />
 
               <StepDots step={2} />
@@ -322,6 +325,6 @@ const s = StyleSheet.create({
   orRow:        { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16 },
   orLine:       { flex: 1, height: 1, backgroundColor: 'rgba(255,255,255,0.12)' },
   orText:       { fontSize: 12, color: 'rgba(255,255,255,0.4)' },
-  cityInput:    { backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 16, borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)', paddingHorizontal: 18, paddingVertical: 16, fontSize: 15, color: '#fff', marginBottom: 24 },
+  cityInput:    { backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 16, borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)', paddingHorizontal: 18, paddingVertical: 16, fontSize: 15, color: '#fff' },
   backBtn:      { width: 56, height: 56, borderRadius: 16, backgroundColor: 'rgba(255,255,255,0.1)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)', alignItems: 'center', justifyContent: 'center' },
 });

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  Switch, Platform, Alert, Linking, Modal, TextInput, KeyboardAvoidingView,
+  Switch, Platform, Alert, Linking, Modal, KeyboardAvoidingView,
 } from 'react-native';
+import CityAutocompleteInput from '@/components/CityAutocompleteInput';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -201,17 +202,16 @@ function CitySelectorModal({ visible, currentCity, onSelect, onClose }: {
             <View style={cs.handle} />
             <Text style={cs.title}>{t.settings.cityInputTitle}</Text>
             <Text style={cs.hint}>{t.onboarding.locationHint}</Text>
-            <TextInput
-              style={[cs.input, isRTL && cs.inputRTL]}
+            <CityAutocompleteInput
               value={input}
               onChangeText={setInput}
+              onSelect={(cityName) => { onSelect(cityName); onClose(); }}
+              onSubmitEditing={confirm}
               placeholder={t.onboarding.cityPlaceholder}
               placeholderTextColor="rgba(107,92,62,0.4)"
-              autoCorrect={false}
-              autoCapitalize="words"
-              returnKeyType="done"
-              onSubmitEditing={confirm}
               textAlign={isRTL ? 'right' : 'left'}
+              inputStyle={[cs.input, isRTL && cs.inputRTL]}
+              containerStyle={{ marginBottom: 16 }}
             />
             <View style={cs.btnRow}>
               <TouchableOpacity style={cs.cancelBtn} onPress={onClose}>
@@ -238,7 +238,7 @@ const cs = StyleSheet.create({
   handle:            { width: 40, height: 4, backgroundColor: 'rgba(107,92,62,0.2)', borderRadius: 2, alignSelf: 'center', marginBottom: 16 },
   title:             { fontSize: 17, fontWeight: '800', color: '#1A1208', textAlign: 'center', marginBottom: 6 },
   hint:              { fontSize: 12, color: '#6B5C3E', textAlign: 'center', marginBottom: 18 },
-  input:             { backgroundColor: '#fff', borderRadius: 16, borderWidth: 1.5, borderColor: 'rgba(201,168,76,0.3)', paddingHorizontal: 18, paddingVertical: 14, fontSize: 16, color: '#1A1208', marginBottom: 16 },
+  input:             { backgroundColor: '#fff', borderRadius: 16, borderWidth: 1.5, borderColor: 'rgba(201,168,76,0.3)', paddingHorizontal: 18, paddingVertical: 14, fontSize: 16, color: '#1A1208' },
   inputRTL:          { textAlign: 'right' },
   btnRow:            { flexDirection: 'row', gap: 10 },
   cancelBtn:         { flex: 1, paddingVertical: 14, backgroundColor: 'rgba(107,92,62,0.1)', borderRadius: 14, alignItems: 'center' },
