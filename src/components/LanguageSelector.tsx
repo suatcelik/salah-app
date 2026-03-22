@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
   Modal, Platform,
@@ -66,8 +66,7 @@ export default function LanguageSelector({ visible, onClose }: LanguageSelectorP
                   {isSelected && (
                     <LinearGradient
                       colors={['rgba(201,168,76,0.15)', 'rgba(201,168,76,0.04)']}
-                      style={StyleSheet.absoluteFillObject}
-                      borderRadius={16}
+                      style={[StyleSheet.absoluteFillObject, { borderRadius: 16 }]}
                     />
                   )}
 
