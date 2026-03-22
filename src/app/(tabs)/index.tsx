@@ -28,8 +28,15 @@ export default function HomeScreen() {
   const t = useT();
   const { language } = useLanguage();
 
-  const { prayerTimes, nextPrayer, currentPrayer, rawData,
-    loading, error, initialize, refreshTimes, updateNextPrayer } = usePrayerStore();
+  const prayerTimes     = usePrayerStore(s => s.prayerTimes);
+  const nextPrayer      = usePrayerStore(s => s.nextPrayer);
+  const currentPrayer   = usePrayerStore(s => s.currentPrayer);
+  const rawData         = usePrayerStore(s => s.rawData);
+  const loading         = usePrayerStore(s => s.loading);
+  const error           = usePrayerStore(s => s.error);
+  const initialize      = usePrayerStore(s => s.initialize);
+  const refreshTimes    = usePrayerStore(s => s.refreshTimes);
+  const updateNextPrayer = usePrayerStore(s => s.updateNextPrayer);
 
   const { isRamadan, isApproaching, daysUntilRamadan,
     ramadanDay, daysUntilEnd, ramadanYear, hijri,

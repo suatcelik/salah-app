@@ -207,12 +207,16 @@ export const usePrayerStore = create<PrayerStore>((set, get) => ({
 
   // ── Sıradaki namazı güncelle (her saniye çağrılır)
   updateNextPrayer: () => {
-    const { prayerTimes } = get();
-    if (!prayerTimes.length) return;
-    set({
-      nextPrayer:    getNextPrayer(prayerTimes),
-      currentPrayer: getCurrentPrayer(prayerTimes),
-    });
+    const state = get();
+    if (!state.prayerTimes.length) return;
+    const nextPrayer    = getNextPrayer(state.prayerTimes);
+    const currentPrayer = getCurrentPrayer(state.prayerTimes);
+    // Namaz kimliği değişmediyse gereksiz re-render tetikleme
+    if (
+      state.nextPrayer?.prayer.key === nextPrayer?.prayer.key &&
+      state.currentPrayer?.key     === currentPrayer?.key
+    ) return;
+    set({ nextPrayer, currentPrayer });
   },
 
   // ── Bildirim ayarı güncelle
