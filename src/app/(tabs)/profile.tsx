@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  Switch, Platform, Alert, Linking,
+  Switch, Platform, Alert, Linking, Modal, FlatList,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -32,6 +32,12 @@ const BORDER       = 'rgba(201,168,76,0.18)';
 const PRAYER_EMOJI: Record<string, string> = {
   fajr: '🌙', dhuhr: '☀️', asr: '🌤️', maghrib: '🌆', isha: '🌃',
 };
+
+const TURKISH_CITIES = [
+  'Adana', 'Ankara', 'Antalya', 'Bursa', 'Diyarbakır', 'Erzurum',
+  'Eskişehir', 'Gaziantep', 'İstanbul', 'İzmir', 'Kayseri', 'Konya',
+  'Malatya', 'Mersin', 'Samsun', 'Trabzon',
+];
 
 const SOUND_OPTIONS = [
   { key: 'ezan',      labelKey: 'ezanSound',    icon: '🕌' },
@@ -169,6 +175,58 @@ function PrayerNotifRow({
   );
 }
 
+// ── Şehir seçici modal
+function CitySelectorModal({ visible, currentCity, onSelect, onClose }: {
+  visible: boolean;
+  currentCity: string;
+  onSelect: (city: string) => void;
+  onClose: () => void;
+}) {
+  return (
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+      <View style={cs.overlay}>
+        <View style={cs.sheet}>
+          <View style={cs.handle} />
+          <Text style={cs.title}>Şehir Seç</Text>
+          <FlatList
+            data={TURKISH_CITIES}
+            keyExtractor={item => item}
+            renderItem={({ item }) => {
+              const isSelected = item.toLowerCase() === currentCity.toLowerCase();
+              return (
+                <TouchableOpacity
+                  style={[cs.cityRow, isSelected && cs.cityRowSel]}
+                  onPress={() => { onSelect(item); onClose(); }}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[cs.cityName, isSelected && cs.cityNameSel]}>{item}</Text>
+                  {isSelected && <Text style={{ fontSize: 16 }}>✓</Text>}
+                </TouchableOpacity>
+              );
+            }}
+          />
+          <TouchableOpacity style={cs.cancelBtn} onPress={onClose}>
+            <Text style={cs.cancelTxt}>Kapat</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+const cs = StyleSheet.create({
+  overlay:      { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end' },
+  sheet:        { backgroundColor: '#FAF6EE', borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingBottom: 34, maxHeight: '70%' },
+  handle:       { width: 40, height: 4, backgroundColor: 'rgba(107,92,62,0.2)', borderRadius: 2, alignSelf: 'center', marginTop: 12, marginBottom: 8 },
+  title:        { fontSize: 16, fontWeight: '800', color: '#1A1208', textAlign: 'center', marginBottom: 12, paddingHorizontal: 20 },
+  cityRow:      { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: 'rgba(201,168,76,0.1)' },
+  cityRowSel:   { backgroundColor: 'rgba(15,61,46,0.06)' },
+  cityName:     { fontSize: 15, fontWeight: '600', color: '#1A1208' },
+  cityNameSel:  { color: '#0F3D2E' },
+  cancelBtn:    { marginHorizontal: 20, marginTop: 12, paddingVertical: 14, backgroundColor: 'rgba(107,92,62,0.1)', borderRadius: 14, alignItems: 'center' },
+  cancelTxt:    { fontSize: 15, fontWeight: '700', color: '#6B5C3E' },
+});
+
 // ── Ana ekran
 export default function ProfileScreen() {
   const insets   = useSafeAreaInsets();
@@ -176,9 +234,10 @@ export default function ProfileScreen() {
   const { language } = useLanguage();
   const isRamadan = useIsRamadan();
 
-  const { notifSettings, setNotifSetting, prayerTimes } = usePrayerStore();
+  const { notifSettings, setNotifSetting, prayerTimes, city, changeCity } = usePrayerStore();
   const { status: permStatus, requestPermission } = useNotificationPermission();
 
+  const [showCitySelector,     setShowCitySelector]     = useState(false);
   const [masterEnabled,        setMasterEnabled]        = useState(true);
   const [selectedSound,        setSelectedSound]        = useState<SoundKey>('ezan');
   const [showLangSelector,     setShowLangSelector]     = useState(false);
@@ -262,6 +321,12 @@ export default function ProfileScreen() {
     <View style={[s.container, { paddingTop: insets.top }]}>
 
       <LanguageSelector visible={showLangSelector} onClose={() => setShowLangSelector(false)} />
+      <CitySelectorModal
+        visible={showCitySelector}
+        currentCity={city}
+        onSelect={changeCity}
+        onClose={() => setShowCitySelector(false)}
+      />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
 
@@ -455,6 +520,19 @@ export default function ProfileScreen() {
             </View>
           </>
         )}
+
+        {/* ── Şehir */}
+        <Divider label="Konum" />
+        <TouchableOpacity style={s.settRow} onPress={() => setShowCitySelector(true)} activeOpacity={0.85}>
+          <View style={[s.settIcon, { backgroundColor: 'rgba(26,107,82,0.1)' }]}>
+            <Text style={{ fontSize: 20 }}>📍</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={s.settLabel}>Şehir</Text>
+            <Text style={s.settSub}>{city}</Text>
+          </View>
+          <Text style={s.settArrow}>›</Text>
+        </TouchableOpacity>
 
         {/* ── Dil */}
         <Divider label={t.settings.language} />

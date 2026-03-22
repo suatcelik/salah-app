@@ -56,6 +56,8 @@ interface PrayerStore {
   fetchByCity:   (city: string) => Promise<void>;
   fetchByDevice: () => Promise<void>;
   refreshTimes:  () => Promise<void>;
+  changeCity:    (city: string) => Promise<void>;
+  initialize:    () => Promise<void>;
   updateNextPrayer: () => void;
   setNotifSetting: (
     prayer: keyof PrayerNotifMap,
@@ -185,6 +187,19 @@ export const usePrayerStore = create<PrayerStore>((set, get) => ({
     }
   },
 
+  // ── Şehri değiştir (cache'i temizle, yeniden çek)
+  changeCity: async (city: string) => {
+    await clearCache();
+    await get().fetchByCity(city);
+  },
+
+  // ── Başlangıç: kayıtlı şehri yükle, sonra GPS ile hassaslaştır
+  initialize: async () => {
+    const savedCity = await AsyncStorage.getItem(KEYS.CITY);
+    await get().fetchByCity(savedCity ?? 'Istanbul');
+    await get().fetchByDevice();
+  },
+
   // ── Sıradaki namazı güncelle (her saniye çağrılır)
   updateNextPrayer: () => {
     const { prayerTimes } = get();
@@ -235,6 +250,13 @@ async function getCachedForToday(): Promise<PrayerTimesData | null> {
   } catch {
     return null;
   }
+}
+
+async function clearCache(): Promise<void> {
+  await Promise.all([
+    AsyncStorage.removeItem(KEYS.CACHE),
+    AsyncStorage.removeItem(KEYS.CACHE_DT),
+  ]);
 }
 
 async function saveCache(data: PrayerTimesData): Promise<void> {

@@ -29,7 +29,7 @@ export default function HomeScreen() {
   const { language } = useLanguage();
 
   const { prayerTimes, nextPrayer, currentPrayer, rawData,
-    loading, error, fetchByDevice, fetchByCity, refreshTimes, updateNextPrayer } = usePrayerStore();
+    loading, error, initialize, refreshTimes, updateNextPrayer } = usePrayerStore();
 
   const { isRamadan, isApproaching, daysUntilRamadan,
     ramadanDay, daysUntilEnd, ramadanYear, hijri,
@@ -40,9 +40,7 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    // Önce İstanbul ile hızlı başlat, paralelde GPS de dene
-    fetchByCity('Istanbul');
-    fetchByDevice();
+    initialize();
   }, []);
 
   useEffect(() => {
