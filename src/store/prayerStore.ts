@@ -81,7 +81,7 @@ export const usePrayerStore = create<PrayerStore>((set, get) => ({
   rawData:       null,
   nextPrayer:    null,
   currentPrayer: null,
-  city:          'Istanbul',
+  city:          '',
   latitude:      null,
   longitude:     null,
   loading:       false,
@@ -196,7 +196,7 @@ export const usePrayerStore = create<PrayerStore>((set, get) => ({
   // ── Başlangıç: kayıtlı şehri yükle, sonra GPS ile hassaslaştır
   initialize: async () => {
     const savedCity = await AsyncStorage.getItem(KEYS.CITY);
-    await get().fetchByCity(savedCity ?? 'Istanbul');
+    if (savedCity) await get().fetchByCity(savedCity);
     await get().fetchByDevice();
   },
 
