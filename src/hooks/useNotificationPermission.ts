@@ -19,6 +19,8 @@ export function setupNotificationHandler() {
         shouldShowAlert: true,
         shouldPlaySound: isEzan,
         shouldSetBadge:  false,
+        shouldShowBanner: true,
+        shouldShowList:   true,
         priority: isEzan
           ? Notifications.AndroidNotificationPriority.MAX
           : Notifications.AndroidNotificationPriority.DEFAULT,
@@ -175,7 +177,7 @@ export async function schedulePrayerNotifications(
           data:  { type: 'ezan', prayer: p.key },
           ...(Platform.OS === 'android' && { channelId: 'ezan' }),
         },
-        trigger: { date: p.time },
+        trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: p.time },
       });
     }
 
@@ -195,7 +197,7 @@ export async function schedulePrayerNotifications(
             data:  { type: 'reminder', prayer: p.key },
             ...(Platform.OS === 'android' && { channelId: 'reminder' }),
           },
-          trigger: { date: reminderTime },
+          trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: reminderTime },
         });
       }
     }
@@ -224,7 +226,7 @@ export async function scheduleIftarApproachingNotification(
       data:  { type: 'iftar_approaching' },
       ...(Platform.OS === 'android' && { channelId: 'reminder' }),
     },
-    trigger: { date: thirtyMinBefore },
+    trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: thirtyMinBefore },
   });
 }
 
@@ -246,7 +248,7 @@ export async function scheduleSuhoorApproachingNotification(
       data:  { type: 'suhoor_approaching' },
       ...(Platform.OS === 'android' && { channelId: 'reminder' }),
     },
-    trigger: { date: thirtyMinBefore },
+    trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: thirtyMinBefore },
   });
 }
 

@@ -319,8 +319,7 @@ export default function ProfileScreen() {
                 {isSelected && (
                   <LinearGradient
                     colors={['rgba(201,168,76,0.12)', 'rgba(201,168,76,0.04)']}
-                    style={StyleSheet.absoluteFillObject}
-                    borderRadius={14}
+                    style={[StyleSheet.absoluteFillObject, { borderRadius: 14 }]}
                   />
                 )}
                 <View style={s.soundRadio}>

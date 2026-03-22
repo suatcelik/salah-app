@@ -10,7 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
 
-import { useLanguage, Language, LANGUAGE_META, translations } from '@/i18n';
+import { useLanguage, Language, translations } from '@/i18n';
 
 const LANGUAGES: { code: Language; flag: string }[] = [
   { code: 'tr', flag: '🇹🇷' },

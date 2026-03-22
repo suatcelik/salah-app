@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
-  Animated, Platform, Easing,
+  Animated, Easing,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -18,9 +18,6 @@ const EMERALD      = '#0F3D2E';
 const EMERALD_MID  = '#1A6B52';
 const GOLD         = '#C9A84C';
 const GOLD_LIGHT   = '#E8C96A';
-const CREAM        = '#FAF6EE';
-const INK          = '#1A1208';
-const MUTED        = '#6B5C3E';
 
 // ── Pusula boyutu
 const COMPASS_SIZE = 280;
@@ -53,7 +50,6 @@ function CompassDial({ compassRotation, qiblaDeg }: {
   compassRotation: Animated.Value;
   qiblaDeg: number;
 }) {
-  const size = COMPASS_SIZE;
   const c    = CENTER;
 
   // Kuzey / Güney / Doğu / Batı noktaları

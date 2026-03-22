@@ -32,7 +32,7 @@ export default function HomeScreen() {
     loading, error, fetchByDevice, fetchByCity, refreshTimes, updateNextPrayer } = usePrayerStore();
 
   const { isRamadan, isApproaching, daysUntilRamadan,
-    ramadanDay, daysUntilEnd, ramadanYear, hijri,
+    ramadanDay, ramadanYear, hijri,
     showWelcome, dismissWelcome } = useRamadan();
 
   const [countdown, setCountdown] = useState({ h: '00', m: '00', s: '00' });
