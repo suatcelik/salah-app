@@ -49,7 +49,8 @@ export default function HomeScreen() {
     if (!prayerTimes.length) return;
     const tick = () => {
       updateNextPrayer();
-      if (nextPrayer) setCountdown(formatCountdown(nextPrayer.remaining));
+      const latest = usePrayerStore.getState().nextPrayer;
+      if (latest) setCountdown(formatCountdown(latest.remaining));
       if (isRamadan) {
         const maghrib = prayerTimes.find(p => p.key === 'maghrib');
         if (maghrib) setIftarMs(Math.max(0, maghrib.time.getTime() - Date.now()));
@@ -58,7 +59,7 @@ export default function HomeScreen() {
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, [prayerTimes, isRamadan, nextPrayer]);
+  }, [prayerTimes, isRamadan]);
 
   useEffect(() => {
     const now = new Date();
