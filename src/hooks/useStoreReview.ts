@@ -91,13 +91,6 @@ export async function declineReview(): Promise<void> {
 }
 
 // ─────────────────────────────────────────────────────────────
-// 4. Sıfırla — sadece test amaçlı
-// ─────────────────────────────────────────────────────────────
-export async function resetReviewState(): Promise<void> {
-  await AsyncStorage.multiRemove([KEY_FIRST_OPEN, KEY_REVIEWED, KEY_DECLINED]);
-}
-
-// ─────────────────────────────────────────────────────────────
 // Yardımcı — platform'a göre store sayfasını aç
 // ─────────────────────────────────────────────────────────────
 async function openStorePage(): Promise<void> {

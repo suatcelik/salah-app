@@ -64,7 +64,7 @@ function jdToHijri(jd: number): HijriDate {
   };
 }
 
-export function gregorianToHijri(date: Date = new Date()): HijriDate {
+function gregorianToHijri(date: Date = new Date()): HijriDate {
   const jd = toJD(date.getFullYear(), date.getMonth() + 1, date.getDate());
   return jdToHijri(jd);
 }

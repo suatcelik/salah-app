@@ -99,25 +99,6 @@ export async function fetchPrayerTimesByCoords(
   return json.data as PrayerTimesData;
 }
 
-// ── Aylık vakitleri getir (haftalık/aylık takvim için)
-export async function fetchMonthlyPrayerTimes(
-  latitude: number,
-  longitude: number,
-  year: number,
-  month: number,
-  method: number = METHOD_TURKEY,
-): Promise<PrayerTimesData[]> {
-  const url = `${BASE_URL}/calendar/${year}/${month}?latitude=${latitude}&longitude=${longitude}&method=${method}`;
-
-  const res = await fetchWithTimeout(url, 15_000);
-  if (!res.ok) throw new Error(`Aladhan API hatası: ${res.status}`);
-
-  const json = await res.json();
-  if (json.code !== 200) throw new Error(json.status ?? 'API hatası');
-
-  return json.data as PrayerTimesData[];
-}
-
 // ── Ham veriyi kullanışlı formata dönüştür
 export function parsePrayerTimes(data: PrayerTimesData): ParsedPrayerTime[] {
   const today = new Date();

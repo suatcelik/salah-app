@@ -503,10 +503,3 @@ export const translations: Record<Language, Translations> = {
   },
 };
 
-export const LANGUAGE_META: Record<Language, { flag: string }> = {
-  tr: { flag: '🇹🇷' },
-  en: { flag: '🇬🇧' },
-  ar: { flag: '🇸🇦' },
-  de: { flag: '🇩🇪' },
-  fr: { flag: '🇫🇷' },
-};

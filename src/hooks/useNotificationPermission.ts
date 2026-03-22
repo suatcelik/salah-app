@@ -252,16 +252,6 @@ export async function scheduleSuhoorApproachingNotification(
   });
 }
 
-// ─────────────────────────────────────────────────────────────
-// 6. İptal
-// ─────────────────────────────────────────────────────────────
-export async function cancelAllPrayerNotifications() {
-  await Notifications.cancelAllScheduledNotificationsAsync();
-}
-
-export async function getScheduledNotifications() {
-  return Notifications.getAllScheduledNotificationsAsync();
-}
 
 // ─────────────────────────────────────────────────────────────
 // Yardımcı — dile göre bildirim string'leri
