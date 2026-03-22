@@ -10,7 +10,12 @@ interface LanguageContextType {
   isRTL: boolean;
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+const LanguageContext = createContext<LanguageContextType>({
+  language: 'tr',
+  t: translations['tr'],
+  setLanguage: async () => {},
+  isRTL: false,
+});
 const STORAGE_KEY = '@salah_language';
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
@@ -47,9 +52,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 }
 
 export function useLanguage(): LanguageContextType {
-  const ctx = useContext(LanguageContext);
-  if (!ctx) throw new Error('useLanguage must be used within LanguageProvider');
-  return ctx;
+  return useContext(LanguageContext);
 }
 
 // Sadece çeviri stringlerine ihtiyaç duyulunca
